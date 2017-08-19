@@ -57,7 +57,6 @@ def fulcon_layer(inputobject, weights, biases):
 #returns the softmax of a 1d array
 def softmax(array):
 	return np.divide(np.exp(array), np.sum(np.exp(array)))
-
 #relu activation function
 def relu(array):
 	array[array < 0] = 0
@@ -84,7 +83,17 @@ def final_layer_error(predictions, labels, weighted_input):
 	return np.multiply(d_loss_quadratic_d_activations(predictions, labels), d_softmax_activations_d_weighted_input(weighted_input))
 
 #calculate the error of the layer lower to the last calculated layer
-def lower_layer_error():
+def lower_layer_error(currentweights,currenterror,lowerinput):
+	def relu_prime(lowerinput): #UNSURE IF CORRECT
+		return np.minimum(lowerinput, 0)
+
+	return np.multiply(np.multiply(np.transpose(weights),currenterror),relu_prime(lowerinput))
+
+#return an array of loss derivatives with respect to their weights
+def d_loss_d_weight():
+
+#return an array of loss derivatives with respect to their biases
+def d_loss_d_bias():
 
 #quadratic loss function for one-hot labels and softmax predictions
 def loss_quadratic(predictions, labels):
