@@ -1,6 +1,6 @@
 import numpy as np
 
-#convlayer
+#CONVLAYER
 
 #input shape: (rows, columns, color: 3 if rgb, 1 if greyscale)
 
@@ -67,11 +67,15 @@ def relu(array):
 #BACKPROP
 
 #calculate the error of the final layer
-def final_layer_error():
-	def d_loss_d_activation(predictions, labels):
+#def final_layer_error():
+	#def d_loss_d_activation(predictions, labels):
 
 #calculate the error of the layer lower to the last calculated layer
-def lower_layer_error():
+#def lower_layer_error():
+
+#quadratic loss function for one-hot labels and softmax predictions
+def lossquadratic(predictions, labels):
+	return np.sum(np.square(np.subtract(labels, predictions)))/(2^labels.size)
 
 #cross entropy loss designed to work with one-hot labels and softmax predictions UNTESTED
 def losscrossentropy(predictions, labels):
@@ -80,8 +84,5 @@ def losscrossentropy(predictions, labels):
 		output -= labels[i] * np.log(predictions[i])
 	return output/i
 
-#quadratic loss function for one-hot labels and softmax predictions
-def lossquadratic(predictions, labels):
-	return np.sum(np.subtract(labels, predictions))/(2^labels.size)
-
+print(lossquadratic(np.array([0.1,0.2,0.3,0.4]),np.array([1,0,0,0])))
 #print(relu(conv_layer(np.array([[[1,2,3],[4,5,6]],[[7,8,9],[10,11,12]]]), init_weights(5, (2,2,3)), init_biases(5), zero_pad_dimensions=(2,2))))
