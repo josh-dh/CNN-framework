@@ -67,22 +67,35 @@ def relu(array):
 #BACKPROP
 
 #calculate the error of the final layer
-#def final_layer_error():
-	#def d_loss_d_activation(predictions, labels):
+def final_layer_error(predictions, labels, weighted_input):
+	# derivative of quadratic loss with respect to activations
+	def d_loss_quadratic_d_activations(predictions, labels):
+		return np.subtract(predictions, labels)
+	#derivate of softmax activations with respect to weighted inputs UNSURE IF CORRECT
+	def d_softmax_activations_d_weighted_input(weighted_input):
+		output = np.zeros((weighted_input.size,))
+		c = np.sum(np.exp(weighted_input)) #constant representing softmax denominator
+		for i in range(weighted_input.size):
+			ctemp = c - np.exp(weighted_input[i])
+			output[i] = (ctemp * np.exp(weighted_input[i]))/np.power((ctemp * np.exp(weighted_input[i])),2)
+		return output
+
+	#hadamard product of two functions:
+	return np.multiply(d_loss_quadratic_d_activations(predictions, labels), d_softmax_activations_d_weighted_input(weighted_input))
 
 #calculate the error of the layer lower to the last calculated layer
-#def lower_layer_error():
+def lower_layer_error():
 
 #quadratic loss function for one-hot labels and softmax predictions
-def lossquadratic(predictions, labels):
-	return np.sum(np.square(np.subtract(labels, predictions)))/(2^labels.size)
+def loss_quadratic(predictions, labels):
+	return np.sum(np.square(np.subtract(labels, predictions)))/(np.exp2(labels.size))
 
 #cross entropy loss designed to work with one-hot labels and softmax predictions UNTESTED
-def losscrossentropy(predictions, labels):
+def loss_cross_entropy(predictions, labels):
 	output = 0
 	for i in range(len(predictions)):
 		output -= labels[i] * np.log(predictions[i])
 	return output/i
 
-print(lossquadratic(np.array([0.1,0.2,0.3,0.4]),np.array([1,0,0,0])))
+print(final_layer_error(softmax(np.array([5,2,5,1])), np.array([0,1,0,0]), np.array([5,2,5,1])))
 #print(relu(conv_layer(np.array([[[1,2,3],[4,5,6]],[[7,8,9],[10,11,12]]]), init_weights(5, (2,2,3)), init_biases(5), zero_pad_dimensions=(2,2))))
