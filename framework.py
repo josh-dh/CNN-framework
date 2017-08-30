@@ -17,11 +17,13 @@ def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(
 	#zero pad equally on x and y axis equally per axis
 	def zero_pad(inputobject, zero_pad_dimensions):
 		if len(inputobject.shape) > 2: #multidemsional
-			inner = np.concatenate(
-					(np.zeros((zero_pad_dimensions[0],inputobject.shape[1],inputobject.shape[2])),
+			print(np.zeros((zero_pad_dimensions[0],inputobject.shape[1], inputobject.shape[2])).shape)
+			print(inputobject.shape)
+			inner = np.concatenate( #concatenate along columns
+					(np.zeros((inputobject.shape[0],zero_pad_dimensions[0],inputobject.shape[2])),
 					inputobject,
-					np.zeros((zero_pad_dimensions[0],inputobject.shape[1], inputobject.shape[2]))), axis=1)
-			return np.concatenate(
+					np.zeros((inputobject.shape[0],zero_pad_dimensions[0],inputobject.shape[2]))), axis=1)
+			return np.concatenate( #concatenate along rows
 				(np.zeros((zero_pad_dimensions[1],inner.shape[1], inner.shape[2])),
 				inner,
 				np.zeros((zero_pad_dimensions[1],inner.shape[1], inner.shape[2]))), axis=0)
@@ -87,7 +89,7 @@ def lower_layer_error(currentweights,currenterror,lowerinput):
 	def relu_prime(lowerinput): #UNSURE IF CORRECT
 		return np.minimum(lowerinput, 0)
 
-	return np.multiply(np.multiply(np.transpose(weights),currenterror),relu_prime(lowerinput))
+	return np.multiply(np.multiply(np.transpose(currentweights),currenterror),relu_prime(lowerinput))
 
 #return an array of loss derivatives with respect to their weights
 def d_loss_d_weight():
@@ -101,7 +103,7 @@ def d_loss_d_bias():
 def loss_quadratic(predictions, labels):
 	return np.sum(np.square(np.subtract(labels, predictions)))/(np.exp2(labels.size))
 
-#cross entropy loss designed to work with one-hot labels and softmax predictions UNTESTED
+#cross entropy loss designed to work with one-hot labels and softmax predictions UNTESTED; UNUSED
 def loss_cross_entropy(predictions, labels):
 	output = 0
 	for i in range(len(predictions)):
@@ -110,4 +112,11 @@ def loss_cross_entropy(predictions, labels):
 
 #test functions
 print(final_layer_error(softmax(np.array([5,2,5,1])), np.array([0,1,0,0]), np.array([5,2,5,1])))
-print(relu(conv_layer(np.array([[[1,2,3],[4,5,6]],[[7,8,9],[10,11,12]]]), init_weights(5, (2,2,3)), init_biases(5), zero_pad_dimensions=(2,2))))
+print(conv_layer(np.array([[[1,2,3],[4,5,6]],[[7,8,9],[10,11,12]]]), init_weights(5, (2,2,3)), init_biases(5), zero_pad_dimensions=(2,2)))
+print(conv_layer(
+	relu(
+		conv_layer(np.array([[[1,2,3],[4,5,6]],[[7,8,9],[10,11,12]]]), init_weights(5, (2,2,3)), init_biases(5), zero_pad_dimensions=(2,2))),
+	init_weights(32, (2,2,5)),
+	init_biases(32),
+	zero_pad_dimensions=(1,1)
+	).shape)
