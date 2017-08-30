@@ -90,10 +90,12 @@ def lower_layer_error(currentweights,currenterror,lowerinput):
 	return np.multiply(np.multiply(np.transpose(weights),currenterror),relu_prime(lowerinput))
 
 #return an array of loss derivatives with respect to their weights
-#def d_loss_d_weight():
+def d_loss_d_weight():
+	pass
 
 #return an array of loss derivatives with respect to their biases
-#def d_loss_d_bias():
+def d_loss_d_bias():
+	pass
 
 #quadratic loss function for one-hot labels and softmax predictions
 def loss_quadratic(predictions, labels):
@@ -106,5 +108,6 @@ def loss_cross_entropy(predictions, labels):
 		output -= labels[i] * np.log(predictions[i])
 	return output/i
 
+#test functions
 print(final_layer_error(softmax(np.array([5,2,5,1])), np.array([0,1,0,0]), np.array([5,2,5,1])))
 print(relu(conv_layer(np.array([[[1,2,3],[4,5,6]],[[7,8,9],[10,11,12]]]), init_weights(5, (2,2,3)), init_biases(5), zero_pad_dimensions=(2,2))))
