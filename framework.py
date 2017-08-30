@@ -1,6 +1,9 @@
 """
 Joshua Donelly-Higgins
 """
+
+#TODO: weight, bias gradients; test backprop
+
 import numpy as np
 
 #CONVLAYER
@@ -135,11 +138,11 @@ def d_loss_d_weight():
 	pass #TEMP
 
 
-def d_loss_d_bias():
+def d_loss_d_bias(error_for_layer):
 	"""
-	return an array of loss derivatives with respect to their biases
+	return an array of loss derivatives with respect to their biases THIS FUNCTION ONLY SERVES THE PURPOSE OF DOCUMENTATION
 	"""
-	pass #TEMP
+	return error_for_layer
 
 
 def loss_quadratic(predictions, labels):
