@@ -1,21 +1,32 @@
+"""
+Joshua Donelly-Higgins
+"""
 import numpy as np
 
 #CONVLAYER
 
-#input shape: (rows, columns, color: 3 if rgb, 1 if greyscale)
-
-#initialize filters with gaussian noise
 def init_weights(filter_count, filter_dimensions):
+	"""
+	initialize filters with gaussian noise
+	"""
 	return np.array([np.random.normal(scale=5,size=filter_dimensions) for i in range(filter_count)])
 
-#initialize
+
 def init_biases(bias_count):
+	"""
+	initialize biases with gaussian noise
+	"""
 	return np.random.normal(scale=5,size=bias_count)
 
-#convolutional layer
+
 def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(1,1), train=False):
-	#zero pad equally on x and y axis equally per axis
+	"""
+	convolutional layer that produces the convolution of an object with weights, biases and other parameters
+	"""
 	def zero_pad(inputobject, zero_pad_dimensions):
+	"""
+	zero pad equally on x and y axis equally per axis
+	"""
 		if len(inputobject.shape) > 2: #multidemsional
 			print(np.zeros((zero_pad_dimensions[0],inputobject.shape[1], inputobject.shape[2])).shape)
 			print(inputobject.shape)
@@ -36,8 +47,12 @@ def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(
 				(np.zeros((zero_pad_dimensions[1],inner.shape[1])),
 				inner,
 				np.zeros((zero_pad_dimensions[1],inner.shape[1]))), axis=0)
-	#convolute filters across image and return result
+
+
 	def convolute(inputobject, filters, biases, stride):
+		"""
+		convolute filters across image and return result
+		"""
 		output = np.zeros(((inputobject.shape[0]-filters.shape[1])/stride[0],(inputobject.shape[1]-filters.shape[2])/stride[1], filters.shape[0]))
 		for i in range(filters.shape[0]):
 			for j in range((inputobject.shape[0]-filters.shape[1])/stride[0]): #rows
@@ -47,33 +62,51 @@ def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(
 						filters[i]))
 		return output
 
+
 	return convolute(zero_pad(inputobject, zero_pad_dimensions), filters, biases, stride)
 
-#fully-connected layer
 def fulcon_layer(inputobject, weights, biases):
+	"""
+	a simple fully-connected layer
+	"""
 	output = numpy.zeros((weights,))
 	for i in output:
 		output[i] = numpy.dot(inputobject.flatten(), weights[i]) + biases[i]
 	return output
 
-#returns the softmax of a 1d array
+
 def softmax(array):
+	"""
+	returns the softmax of a 1d array
+	"""
 	return np.divide(np.exp(array), np.sum(np.exp(array)))
-#relu activation function
+
+
 def relu(array):
+	"""
+	relu activation function
+	"""
 	array[array < 0] = 0
 	return array
 
 
 #BACKPROP
 
-#calculate the error of the final layer
 def final_layer_error(predictions, labels, weighted_input):
-	# derivative of quadratic loss with respect to activations
+	"""
+	calculate the error of the final layer
+	"""
 	def d_loss_quadratic_d_activations(predictions, labels):
+		"""
+		derivative of quadratic loss with respect to activations
+		"""
 		return np.subtract(predictions, labels)
-	#derivate of softmax activations with respect to weighted inputs UNSURE IF CORRECT
+
+
 	def d_softmax_activations_d_weighted_input(weighted_input):
+		"""
+		derivate of softmax activations with respect to weighted inputs UNSURE IF CORRECT
+		"""
 		output = np.zeros((weighted_input.size,))
 		c = np.sum(np.exp(weighted_input)) #constant representing softmax denominator
 		for i in range(weighted_input.size):
@@ -84,27 +117,42 @@ def final_layer_error(predictions, labels, weighted_input):
 	#hadamard product of two functions:
 	return np.multiply(d_loss_quadratic_d_activations(predictions, labels), d_softmax_activations_d_weighted_input(weighted_input))
 
-#calculate the error of the layer lower to the last calculated layer
+
 def lower_layer_error(currentweights,currenterror,lowerinput):
+	"""
+	calculate the error of the layer lower to the last calculated layer
+	"""
 	def relu_prime(lowerinput): #UNSURE IF CORRECT
 		return np.minimum(lowerinput, 0)
 
 	return np.multiply(np.multiply(np.transpose(currentweights),currenterror),relu_prime(lowerinput))
 
-#return an array of loss derivatives with respect to their weights
+
 def d_loss_d_weight():
-	pass
+	"""
+	return an array of loss derivatives with respect to their weights
+	"""
+	pass #TEMP
 
-#return an array of loss derivatives with respect to their biases
+
 def d_loss_d_bias():
-	pass
+	"""
+	return an array of loss derivatives with respect to their biases
+	"""
+	pass #TEMP
 
-#quadratic loss function for one-hot labels and softmax predictions
+
 def loss_quadratic(predictions, labels):
+	"""
+	quadratic loss function for one-hot labels and softmax predictions
+	"""
 	return np.sum(np.square(np.subtract(labels, predictions)))/(np.exp2(labels.size))
 
-#cross entropy loss designed to work with one-hot labels and softmax predictions UNTESTED; UNUSED
+
 def loss_cross_entropy(predictions, labels):
+	"""
+	cross entropy loss designed to work with one-hot labels and softmax predictions UNTESTED; UNUSED
+	"""
 	output = 0
 	for i in range(len(predictions)):
 		output -= labels[i] * np.log(predictions[i])
