@@ -23,13 +23,13 @@ def init_biases(bias_count):
 
 
 def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(1,1), train=False):
-	"""
+	"""`
 	convolutional layer that produces the convolution of an object with weights, biases and other parameters
 	"""
 	def zero_pad(inputobject, zero_pad_dimensions):
-	"""
-	zero pad equally on x and y axis equally per axis
-	"""
+		"""
+		zero pad equally on x and y axis equally per axis
+		"""
 		if len(inputobject.shape) > 2: #multidemsional
 			print(np.zeros((zero_pad_dimensions[0],inputobject.shape[1], inputobject.shape[2])).shape)
 			print(inputobject.shape)
