@@ -14,14 +14,14 @@ def init_weights(filter_count, filter_dimensions):
 	"""
 	initialize filters with gaussian noise
 	"""
-	return np.array([np.random.normal(scale=5,size=filter_dimensions) for i in range(filter_count)])
+	return np.array([np.random.normal(scale=100,size=filter_dimensions) for i in range(filter_count)])
 
 
 def init_biases(bias_count):
 	"""
 	initialize biases with gaussian noise
 	"""
-	return np.random.normal(scale=5,size=bias_count)
+	return np.random.normal(scale=100,size=bias_count)
 
 
 def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(1,1), train=False):
@@ -33,8 +33,6 @@ def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(
 		zero pad equally on x and y axis equally per axis
 		"""
 		if len(inputobject.shape) > 2: #multidemsional
-			print(np.zeros((zero_pad_dimensions[0],inputobject.shape[1], inputobject.shape[2])).shape)
-			print(inputobject.shape)
 			inner = np.concatenate( #concatenate along columns
 					(np.zeros((inputobject.shape[0],zero_pad_dimensions[0],inputobject.shape[2])),
 					inputobject,
@@ -74,9 +72,10 @@ def fulcon_layer(inputobject, weights, biases):
 	"""
 	a simple fully-connected layer
 	"""
-	output = numpy.zeros((weights,))
-	for i in output:
-		output[i] = numpy.dot(inputobject.flatten(), weights[i]) + biases[i]
+	output = np.empty(weights.shape[0])
+	for i in range(output.shape[0]):
+		output[i] = np.inner(inputobject.flatten(), weights[i].flatten()) + biases[i]
+
 	return output
 
 
@@ -199,6 +198,44 @@ def test():
 		zero_pad_dimensions=(1,1)
 		).shape)
 	import_batch("/Users/admin/Documents/code/python/tensorflow/projects/CIFAR-10-convnet/Data/test/", 1, 256)
+
+def test_full_net():
+	"""
+	test whether an evaluable network can be created
+	"""
+
+	#import
+
+	test_data = import_batch("/Users/admin/Documents/code/python/tensorflow/projects/CIFAR-10-convnet/Data/test/", 1, 10)
+
+	#weights and biases
+
+	layer1_weights = init_weights(32, (4,4,3))
+	layer1_biases = init_biases(32)
+
+	layer2_weights = init_weights(128, (8192))
+	layer2_biases = init_biases(128)
+
+	layer3_weights = init_weights(10, (128))
+	layer3_biases = init_biases(10)
+
+	output = np.empty((10, 10))
+	for i in range(0,9):
+		layer1 = relu(conv_layer(test_data[i], layer1_weights, layer1_biases, zero_pad_dimensions=(2,2), stride=(2,2)))
+		layer2 = relu(fulcon_layer(layer1, layer2_weights, layer2_biases))
+		layer3 = relu(fulcon_layer(layer2, layer3_weights, layer3_biases))
+		output[i] = softmax(layer3)
+
+	return output
+
+
+print(test_full_net())
+
+
+
+
+
+
 
 
 
