@@ -14,14 +14,14 @@ def init_weights(filter_count, filter_dimensions):
 	"""
 	initialize filters with gaussian noise
 	"""
-	return np.array([np.random.normal(scale=100,size=filter_dimensions) for i in range(filter_count)])
+	return np.array([np.random.normal(scale=0.01,size=filter_dimensions) for i in range(filter_count)])
 
 
 def init_biases(bias_count):
 	"""
 	initialize biases with gaussian noise
 	"""
-	return np.random.normal(scale=100,size=bias_count)
+	return np.random.normal(scale=0.01,size=bias_count)
 
 
 def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(1,1), train=False):
@@ -74,7 +74,7 @@ def fulcon_layer(inputobject, weights, biases):
 	"""
 	output = np.empty(weights.shape[0])
 	for i in range(output.shape[0]):
-		output[i] = np.inner(inputobject.flatten(), weights[i].flatten()) + biases[i]
+		output[i] = np.dot(inputobject.flatten(), weights[i].flatten()) + biases[i]
 
 	return output
 
@@ -224,15 +224,10 @@ def test_full_net():
 		layer1 = relu(conv_layer(test_data[i], layer1_weights, layer1_biases, zero_pad_dimensions=(2,2), stride=(2,2)))
 		layer2 = relu(fulcon_layer(layer1, layer2_weights, layer2_biases))
 		layer3 = relu(fulcon_layer(layer2, layer3_weights, layer3_biases))
+		print(layer3)
 		output[i] = softmax(layer3)
 
 	return output
-
-
-print(test_full_net())
-
-
-
 
 
 
