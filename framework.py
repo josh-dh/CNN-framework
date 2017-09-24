@@ -227,10 +227,5 @@ def test_full_net():
 		print(layer3)
 		output[i] = softmax(layer3)
 
-	return output
-
-
-
-
 
 
