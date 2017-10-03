@@ -48,10 +48,10 @@ def conv_layer(inputobject, filters, biases, zero_pad_dimensions=(0,0), stride=(
 		"""
 		convolute filters across image and return result
 		"""
-		output = np.zeros(((inputobject.shape[0]-filters.shape[1])/stride[0],(inputobject.shape[1]-filters.shape[2])/stride[1], filters.shape[0]))
+		output = np.zeros(((inputobject.shape[0]-filters.shape[1])//stride[0],(inputobject.shape[1]-filters.shape[2])//stride[1], filters.shape[0]))
 		for i in range(filters.shape[0]):
-			for j in range((inputobject.shape[0]-filters.shape[1])/stride[0]): #rows
-				for k in range((inputobject.shape[1]-filters.shape[2])/stride[1]): #columns
+			for j in range((inputobject.shape[0]-filters.shape[1])//stride[0]): #rows
+				for k in range((inputobject.shape[1]-filters.shape[2])//stride[1]): #columns
 					output[j,k,i] = (biases[i] + np.vdot(
 						inputobject[np.ix_(np.arange(j*stride[0], j*stride[0] + filters.shape[1]), np.arange(k*stride[1], k*stride[1] + filters.shape[2]))],
 						filters[i]))
