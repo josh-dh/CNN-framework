@@ -1,3 +1,3 @@
 # CNN-framework
 
-A convolutional neural network framework developed by Joshua Donelly-Higgins.
+A convolutional neural network framework developed by Joshua Donelly-Higgins. Unfinished.
